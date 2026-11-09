@@ -49,8 +49,10 @@
     document.cookie = kill;
     if (host) { document.cookie = kill + '; domain=' + host; document.cookie = kill + '; domain=.' + host; }
     if (needGT) document.cookie = `googtrans=/en/${code}; path=/`;
+    // Same URL + hash only changes the hash (no reload), so drop ?lang and force a reload.
     const u = new URL(location.href); u.searchParams.delete('lang');
-    location.replace(u.toString());
+    try { history.replaceState(null, '', u.toString()); } catch (e) {}
+    location.reload();
   }
   function initGT() {
     if (!GT) return;
@@ -69,7 +71,7 @@
     if (loading[cid]) return loading[cid];
     loading[cid] = new Promise((res, rej) => {
       const s = document.createElement('script');
-      s.src = `data/${cid}.js?v=${window.BUILD || 1}`;
+      s.src = `data/${cid}.js?v=2`;
       s.onload = () => res(); s.onerror = rej;
       document.head.appendChild(s);
     });
