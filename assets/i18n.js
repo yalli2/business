@@ -1,18 +1,7 @@
-// UI strings. Content (summaries, quizzes) is authored in English + Korean;
-// other languages show English content auto-translated by Google Translate.
+// UI strings. Content (summaries, quizzes) is authored in English and Korean.
 window.LANGS = [
   { code: 'en', label: 'English', flag: '🇬🇧' },
   { code: 'ko', label: '한국어', flag: '🇰🇷' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' },
-  { code: 'zh-CN', label: '中文', flag: '🇨🇳' },
-  { code: 'ja', label: '日本語', flag: '🇯🇵' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-  { code: 'pt', label: 'Português', flag: '🇧🇷' },
-  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
-  { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
-  { code: 'ar', label: 'العربية', flag: '🇸🇦' },
-  { code: 'hi', label: 'हिन्दी', flag: '🇮🇳' },
 ];
 
 window.UI = {

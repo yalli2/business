@@ -7,6 +7,6 @@ Interactive study site for an international-school Business class, based on *The
 - Practice quiz per topic (multiple choice, true/false, fill-in-the-blank) with instant scoring and explanations
 - Chapter test (all questions of a chapter) with results by topic
 - Progress and best scores saved in the browser
-- Language button (top right): English and Korean content; Spanish, Chinese, Japanese, French, German, Portuguese, Russian, Vietnamese, Arabic and Hindi via automatic translation
+- Language button (top right): English / 한국어
 
 Hosted with GitHub Pages — open `index.html`.

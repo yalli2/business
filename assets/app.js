@@ -19,16 +19,13 @@
   if (!LANGS.find(l => l.code === LANG)) LANG = 'en';
   store.set('lang', LANG);
   const NATIVE_UI = !!UI[LANG];
-  const GT = !(LANG === 'en' || LANG === 'ko');      // Google-translate English content
+  const GT = false;                                   // no auto-translation
   const CL = LANG === 'ko' ? 'ko' : 'en';           // content language
   let BI = store.get('bi', false);                   // bilingual (show English under Korean)
 
   function guessLang() {
     const n = (navigator.language || 'en').toLowerCase();
-    if (n.startsWith('ko')) return 'ko';
-    if (n.startsWith('zh')) return 'zh-CN';
-    const two = n.slice(0, 2);
-    return (LANGS.find(l => l.code === two) || { code: 'en' }).code;
+    return n.startsWith('ko') ? 'ko' : 'en';
   }
   function t(k) { return (UI[LANG] && UI[LANG][k]) || UI.en[k] || k; }
   // UI text: if we have a hand-written table for this language, keep Google Translate away from it
@@ -41,28 +38,20 @@
   const chOf = id => CH.find(c => c.id === id.split('-')[0]);
   const chNum = c => CH.indexOf(c) + 1;
 
-  function setLang(code) {
-    store.set('lang', code);
-    const needGT = !(code === 'en' || code === 'ko');
+  // Clear any Google Translate cookie left by older versions of the site.
+  function clearGT() {
     const host = location.hostname;
     const kill = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
     document.cookie = kill;
     if (host) { document.cookie = kill + '; domain=' + host; document.cookie = kill + '; domain=.' + host; }
-    if (needGT) document.cookie = `googtrans=/en/${code}; path=/`;
+  }
+  function setLang(code) {
+    store.set('lang', code);
+    clearGT();
     // Same URL + hash only changes the hash (no reload), so drop ?lang and force a reload.
     const u = new URL(location.href); u.searchParams.delete('lang');
     try { history.replaceState(null, '', u.toString()); } catch (e) {}
     location.reload();
-  }
-  function initGT() {
-    if (!GT) return;
-    document.cookie = `googtrans=/en/${LANG}; path=/`;
-    window.gtInit = function () {
-      try { new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'gt'); } catch (e) {}
-    };
-    const s = document.createElement('script');
-    s.src = 'https://translate.google.com/translate_a/element.js?cb=gtInit';
-    document.head.appendChild(s);
   }
 
   /* ---------- data loading ---------- */
@@ -108,10 +97,10 @@
       <div class="crumbs">${crumbs || ''}</div>
       <div class="lang notranslate" id="lang">
         <button aria-haspopup="true" title="Language">🌐 ${cur.flag} ${esc(cur.label)} ▾</button>
-        <ul>${LANGS.map(l => `<li><button data-l="${l.code}" class="${l.code === LANG ? 'on' : ''}">${l.flag} ${esc(l.label)}</button></li>`).join('')}</ul>
+        <ul>${LANGS.map(l => `<li><button data-l="${l.code}" class="${l.code === LANG ? 'on' : ''}">${l.flag} ${esc(l.label)}</button></li>`).join('')}
+          <li class="hint">${LANG === 'ko' ? '다른 언어는 브라우저의 번역 기능을 이용하세요.' : 'For other languages, use your browser’s Translate feature.'}</li></ul>
       </div>
     </div></header>
-    ${GT && t('translatedNote') ? `<div class="note">${T('translatedNote')}</div>` : ''}
     <main>${body}</main>
     <footer><div class="wrap">
       <span>Study notes & exercises based on <i>The Business Book</i> (DK, “Big Ideas Simply Explained”). For classroom use.</span>
@@ -380,6 +369,6 @@
   document.documentElement.lang = CL;
   if (LANG === 'ar') document.body.classList.add('rtl');
   window.addEventListener('hashchange', route);
-  initGT();
+  if (/googtrans=/.test(document.cookie)) clearGT();
   route();
 })();
