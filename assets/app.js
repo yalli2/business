@@ -376,7 +376,8 @@
     if (h[0] === 'test' && h[1]) return chapterTest(h[1]);
     home();
   }
-  document.documentElement.lang = LANG;
+  // Content is English for auto-translated languages; declaring it lets Google Translate run.
+  document.documentElement.lang = CL;
   if (LANG === 'ar') document.body.classList.add('rtl');
   window.addEventListener('hashchange', route);
   initGT();
